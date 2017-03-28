@@ -1,4 +1,4 @@
-package org.nantes.univ.archi.appli;
+package org.nantes.univ.archi.gestionEtudiants;
 
 import java.awt.Dimension;
 
