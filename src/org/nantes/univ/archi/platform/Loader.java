@@ -1,53 +1,70 @@
 package org.nantes.univ.archi.platform;
 
-import org.nantes.univ.archi.appli.IAfficheur;
-
-import java.io.FileNotFoundException;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.io.FileReader;
 import java.lang.reflect.Method;
 import java.util.Properties;
+
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  * Created by romain on 07/03/17.
  */
 public class Loader {
 
-    public static Object loadPlugin(String configFileName, Class<?> returnedClass) throws Exception {
-        Properties p = new Properties();
-        p.load(new FileReader(configFileName));
+	public static Object loadPlugin(String configFileName, Class<?> returnedClass) throws Exception { // à modifier
 
-        Class<?> cl = Class.forName((String) p.get("class"));
 
-        if (!returnedClass.isAssignableFrom(cl)) {
-            throw new Exception("La classe "+cl.getName()+" n'est pas du type "+returnedClass.getName());
-        }
+		Properties p = new Properties();
+		p.load(new FileReader(configFileName));
 
-        Object ob = cl.newInstance();
-        Method[] methods = cl.getMethods();
+		Class<?> cl = Class.forName((String) p.get("class"));
 
-        for (Object property : p.keySet()) {
-            String stringProperty = (String) property;
+		if (!returnedClass.isAssignableFrom(cl)) {
+			throw new Exception("La classe "+cl.getName()+" n'est pas du type "+returnedClass.getName());
+		}
 
-            if (!stringProperty.equals("class")) {
+		Object ob = cl.newInstance();
+		Method[] methods = cl.getMethods();
 
-                // TODO Optimiser car double boucle ...
-                for (Method currentMethod : methods) {
+		for (Object property : p.keySet()) {
+			String stringProperty = (String) property;
 
-                    if (currentMethod.getName().equals("set"+stringProperty)) {
+			if (!stringProperty.equals("class")) {
 
-                        Class<?> setterTypeParameter = currentMethod.getParameterTypes()[0];
+				// TODO Optimiser car double boucle ...
+				for (Method currentMethod : methods) {
 
-                        if (setterTypeParameter.equals(int.class)) {
-                            currentMethod.invoke(ob, Integer.parseInt((String) p.get(stringProperty)));
-                        } else if (setterTypeParameter.equals(String.class)) {
-                            currentMethod.invoke(ob, p.get(stringProperty));
-                        }
-                    }
+					if (currentMethod.getName().equals("set"+stringProperty)) {
 
-                }
-            }
-        }
+						Class<?> setterTypeParameter = currentMethod.getParameterTypes()[0];
 
-        return ob;
-    }
+						if (setterTypeParameter.equals(int.class)) {
+							currentMethod.invoke(ob, Integer.parseInt((String) p.get(stringProperty)));
+						} else if (setterTypeParameter.equals(String.class)) {
+							currentMethod.invoke(ob, p.get(stringProperty));
+						}
+					}
+
+				}
+			}
+		}
+
+		return ob;
+	}
+
+
+	public static void main(String[] args) {
+		// parcourir le dossier où il y a le fichier de config
+
+		// lancer les config en autorun
+
+	}
+
+
 }
