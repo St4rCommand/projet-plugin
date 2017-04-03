@@ -1,4 +1,0 @@
-class=org.nantes.univ.archi.plugin.Personne
-Nom=Romain
-Ville=Nantes
-Age=23

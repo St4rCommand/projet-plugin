@@ -1,85 +1,122 @@
 package org.nantes.univ.archi.platform;
 
 import org.yaml.snakeyaml.Yaml;
-import sun.security.krb5.internal.crypto.Des;
 
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
-
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by romain on 07/03/17.
  */
 public class Loader {
 
-    // TODO return List<IDescription>
-    public static IDescription getDescriptionForPlugin(Class<?> constraint) throws Exception {
+    private static List<IDescription> pluginsDescription = new ArrayList<>();
 
-        Properties p = new Properties();
-        p.load(new FileReader("./ressources/personne.txt"));
-
-        String className = (String) p.get("class");
-        Class<?> cl = Class.forName(className);
-        if (!constraint.isAssignableFrom(cl)) {
-            throw new Exception("La classe "+cl.getName()+" n'est pas du type "+constraint.getName());
-        }
-
-        Map<String, String> proprietes = new TreeMap<>();
-        for (Object property : p.keySet()) {
-            String stringProperty = (String) property;
-
-            if (!stringProperty.equals("class")) {
-                proprietes.put(stringProperty, p.getProperty(stringProperty));
-            }
-        }
-
-        Description description = new Description(className, proprietes);
-
-        return description;
+    public static void main(String[] args) {
+        loadConfig();
+        lauchAutoRunPlugins();
     }
 
-    public static Object getPluginForDescription(IDescription description) throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException {
-        Class<?> cl = Class.forName(description.getName());
+    /**
+     * Start autorun plugins
+     */
+    private static void lauchAutoRunPlugins() {
+        for (IDescription plugin : pluginsDescription) {
 
-        Object ob = cl.newInstance();
-        Method[] methods = cl.getMethods();
+            if (isAutoRunPlugin(plugin)) {
 
-        Map<String, String> proprietes = description.getProprietes();
+                // TODO charger ses dépendances
 
-        for (Object property : proprietes.keySet()) {
-
-            String stringProperty = (String) property;
-            String setterName = "set"+stringProperty;
-
-            for (Method method: methods) {
-
-                if (method.getName().equals(setterName)) {
-                    Class<?> setterTypeParameter = method.getParameterTypes()[0];
-
-                    if (setterTypeParameter.equals(int.class)) {
-                        method.invoke(ob, Integer.parseInt(proprietes.get(stringProperty)));
-                    } else if (setterTypeParameter.equals(String.class)) {
-                        method.invoke(ob, proprietes.get(stringProperty));
-                    }
-                }
+                Plugin o = (Plugin) loadPlugin(plugin);
+                o.start();
             }
         }
+    }
 
-		return ob;
-	}
+    private static boolean isAutoRunPlugin(IDescription plugin) {
 
+        // TODO vérifier si le plugin doit être lancé au démarrage
 
-	public static void main(String[] args) {
-		// parcourir le dossier o� il y a le fichier de config
+        return true;
+    }
 
-		// lancer les config en autorun
+    /**
+     * Load the main plugin class
+     *
+     * @param description
+     * @return
+     */
+    public static Object loadPlugin(IDescription description) {
+        Class<?> cl = null;
 
-	}
+        try {
+            cl = Class.forName(description.getName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
 
+        Object ob = null;
+        try {
+            ob = cl.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
 
+        return ob;
+    }
+
+    /**
+     * Load application config
+     */
+    private static void loadConfig() {
+        Map<String, Map> pluginConfigs = loadConfigFile();
+
+        for (Map.Entry<String, Map> pluginConfig : pluginConfigs.entrySet()) {
+            pluginsDescription.add(loadPluginConfig(pluginConfig.getValue()));
+        }
+    }
+
+    /**
+     * Load a specific pluginsDescription config
+     *
+     * @param pluginConfig
+     * @return
+     */
+    private static IDescription loadPluginConfig(Map pluginConfig) {
+
+        // TODO vérifier que la class principale implémente une fonction start (mettre en place une interface)
+
+        return new Description((String) pluginConfig.get("class"), pluginConfig);
+    }
+
+    /**
+     * Load main config file
+     *
+     * @return
+     */
+    private static Map<String, Map> loadConfigFile() {
+        Map<String, Map> map = new HashMap<>();
+
+        try {
+            InputStream input = new FileInputStream(new File("./ressources/config.yml"));
+            Yaml yaml = new Yaml();
+            map = (Map<String, Map>) yaml.load(input);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return map;
+    }
 }

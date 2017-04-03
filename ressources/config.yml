@@ -1,0 +1,9 @@
+MiageSims:
+  name: "MiageSims"
+  class: "org.nantes.univ.archi.gestionEtudiants.SimsMIAGE"
+  autoRun: true
+  dependancies : []
+Monitor:
+  name: "Monitor"
+  class: "org.nantes.univ.archi.plugin.Monitor"
+  autoRun: true
