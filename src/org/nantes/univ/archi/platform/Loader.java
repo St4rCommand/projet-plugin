@@ -1,12 +1,12 @@
 package org.nantes.univ.archi.platform;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.io.FileReader;
+import org.yaml.snakeyaml.Yaml;
+import sun.security.krb5.internal.crypto.Des;
+
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Properties;
+import java.util.*;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -17,50 +17,65 @@ import javax.swing.JPanel;
  */
 public class Loader {
 
-	public static Object loadPlugin(String configFileName, Class<?> returnedClass) throws Exception { // à modifier
+    // TODO return List<IDescription>
+    public static IDescription getDescriptionForPlugin(Class<?> constraint) throws Exception {
 
+        Properties p = new Properties();
+        p.load(new FileReader("./ressources/personne.txt"));
 
-		Properties p = new Properties();
-		p.load(new FileReader(configFileName));
+        String className = (String) p.get("class");
+        Class<?> cl = Class.forName(className);
+        if (!constraint.isAssignableFrom(cl)) {
+            throw new Exception("La classe "+cl.getName()+" n'est pas du type "+constraint.getName());
+        }
 
-		Class<?> cl = Class.forName((String) p.get("class"));
+        Map<String, String> proprietes = new TreeMap<>();
+        for (Object property : p.keySet()) {
+            String stringProperty = (String) property;
 
-		if (!returnedClass.isAssignableFrom(cl)) {
-			throw new Exception("La classe "+cl.getName()+" n'est pas du type "+returnedClass.getName());
-		}
+            if (!stringProperty.equals("class")) {
+                proprietes.put(stringProperty, p.getProperty(stringProperty));
+            }
+        }
 
-		Object ob = cl.newInstance();
-		Method[] methods = cl.getMethods();
+        Description description = new Description(className, proprietes);
 
-		for (Object property : p.keySet()) {
-			String stringProperty = (String) property;
+        return description;
+    }
 
-			if (!stringProperty.equals("class")) {
+    public static Object getPluginForDescription(IDescription description) throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException {
+        Class<?> cl = Class.forName(description.getName());
 
-				// TODO Optimiser car double boucle ...
-				for (Method currentMethod : methods) {
+        Object ob = cl.newInstance();
+        Method[] methods = cl.getMethods();
 
-					if (currentMethod.getName().equals("set"+stringProperty)) {
+        Map<String, String> proprietes = description.getProprietes();
 
-						Class<?> setterTypeParameter = currentMethod.getParameterTypes()[0];
+        for (Object property : proprietes.keySet()) {
 
-						if (setterTypeParameter.equals(int.class)) {
-							currentMethod.invoke(ob, Integer.parseInt((String) p.get(stringProperty)));
-						} else if (setterTypeParameter.equals(String.class)) {
-							currentMethod.invoke(ob, p.get(stringProperty));
-						}
-					}
+            String stringProperty = (String) property;
+            String setterName = "set"+stringProperty;
 
-				}
-			}
-		}
+            for (Method method: methods) {
+
+                if (method.getName().equals(setterName)) {
+                    Class<?> setterTypeParameter = method.getParameterTypes()[0];
+
+                    if (setterTypeParameter.equals(int.class)) {
+                        method.invoke(ob, Integer.parseInt(proprietes.get(stringProperty)));
+                    } else if (setterTypeParameter.equals(String.class)) {
+                        method.invoke(ob, proprietes.get(stringProperty));
+                    }
+                }
+            }
+        }
 
 		return ob;
 	}
 
 
 	public static void main(String[] args) {
-		// parcourir le dossier où il y a le fichier de config
+		// parcourir le dossier oï¿½ il y a le fichier de config
 
 		// lancer les config en autorun
 
