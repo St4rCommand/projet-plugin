@@ -1,49 +1,67 @@
 package org.nantes.univ.archi.platform;
 
-import org.nantes.univ.archi.appli.IAfficheur;
+import org.yaml.snakeyaml.Yaml;
+import sun.security.krb5.internal.crypto.Des;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Created by romain on 07/03/17.
  */
 public class Loader {
 
-    public static Object loadPlugin(String configFileName, Class<?> returnedClass) throws Exception {
+    // TODO return List<IDescription>
+    public static IDescription getDescriptionForPlugin(Class<?> constraint) throws Exception {
+
         Properties p = new Properties();
-        p.load(new FileReader(configFileName));
+        p.load(new FileReader("./ressources/personne.txt"));
 
-        Class<?> cl = Class.forName((String) p.get("class"));
-
-        if (!returnedClass.isAssignableFrom(cl)) {
-            throw new Exception("La classe "+cl.getName()+" n'est pas du type "+returnedClass.getName());
+        String className = (String) p.get("class");
+        Class<?> cl = Class.forName(className);
+        if (!constraint.isAssignableFrom(cl)) {
+            throw new Exception("La classe "+cl.getName()+" n'est pas du type "+constraint.getName());
         }
 
-        Object ob = cl.newInstance();
-        Method[] methods = cl.getMethods();
-
+        Map<String, String> proprietes = new TreeMap<>();
         for (Object property : p.keySet()) {
             String stringProperty = (String) property;
 
             if (!stringProperty.equals("class")) {
+                proprietes.put(stringProperty, p.getProperty(stringProperty));
+            }
+        }
 
-                // TODO Optimiser car double boucle ...
-                for (Method currentMethod : methods) {
+        Description description = new Description(className, proprietes);
 
-                    if (currentMethod.getName().equals("set"+stringProperty)) {
+        return description;
+    }
 
-                        Class<?> setterTypeParameter = currentMethod.getParameterTypes()[0];
+    public static Object getPluginForDescription(IDescription description) throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException {
+        Class<?> cl = Class.forName(description.getName());
 
-                        if (setterTypeParameter.equals(int.class)) {
-                            currentMethod.invoke(ob, Integer.parseInt((String) p.get(stringProperty)));
-                        } else if (setterTypeParameter.equals(String.class)) {
-                            currentMethod.invoke(ob, p.get(stringProperty));
-                        }
+        Object ob = cl.newInstance();
+        Method[] methods = cl.getMethods();
+
+        Map<String, String> proprietes = description.getProprietes();
+
+        for (Object property : proprietes.keySet()) {
+
+            String stringProperty = (String) property;
+            String setterName = "set"+stringProperty;
+
+            for (Method method: methods) {
+
+                if (method.getName().equals(setterName)) {
+                    Class<?> setterTypeParameter = method.getParameterTypes()[0];
+
+                    if (setterTypeParameter.equals(int.class)) {
+                        method.invoke(ob, Integer.parseInt(proprietes.get(stringProperty)));
+                    } else if (setterTypeParameter.equals(String.class)) {
+                        method.invoke(ob, proprietes.get(stringProperty));
                     }
-
                 }
             }
         }
