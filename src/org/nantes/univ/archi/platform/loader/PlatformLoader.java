@@ -12,6 +12,9 @@ import java.util.List;
  */
 public class PlatformLoader {
 
+    // TODO Gérer des dépendances requises
+    // TODO Refactoring pour supprimer tous les statics (singleton sur la plateforme ?)
+
     // TODO passer en privé
     public static List<IDescription> pluginDescriptions = new ArrayList<>();
 
@@ -47,8 +50,6 @@ public class PlatformLoader {
             }
         }
     }
-
-
 
 
 }
