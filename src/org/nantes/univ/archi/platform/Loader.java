@@ -119,4 +119,12 @@ public class Loader {
 
         return map;
     }
+
+    public static List<IDescription> getPluginsDescription(Class<?> constraint) {
+        // TODO retourner en faisant un filtre sur les types
+
+        List<IDescription> list = new ArrayList<>();
+
+        return list;
+    }
 }
