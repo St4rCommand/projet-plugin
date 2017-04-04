@@ -9,6 +9,5 @@ public interface IDescription {
 
     Map<String, String> getProprietes();
     String getName();
-    String getText();
     int getStatus();
 }

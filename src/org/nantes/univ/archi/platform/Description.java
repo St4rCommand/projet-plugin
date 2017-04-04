@@ -10,7 +10,7 @@ public class Description implements IDescription {
 
     protected Map<String, String> proprietes;
     protected String name;
-    protected String text;
+    protected String description;
     protected int status;
 
     public Description (String name, Map<String, String> proprietes) {
@@ -26,9 +26,8 @@ public class Description implements IDescription {
         return this.name;
     }
 
-    @Override
-    public String getText() {
-        return this.text;
+    public String getDescription() {
+        return description;
     }
 
     @Override

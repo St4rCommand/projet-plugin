@@ -5,5 +5,5 @@ package org.nantes.univ.archi.platform;
  */
 public interface Plugin {
 
-    void start();
+    void start() throws Exception;
 }

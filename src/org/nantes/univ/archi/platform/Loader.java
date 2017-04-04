@@ -16,8 +16,10 @@ import java.util.Map;
  */
 public class Loader {
 
-    private static List<IDescription> pluginsDescription = new ArrayList<>();
+    private static List<IDescription> pluginDescriptions = new ArrayList<>();
 
+
+    // TODO mettre en place les status
     public static void main(String[] args) {
         loadConfig();
         lauchAutoRunPlugins();
@@ -27,23 +29,59 @@ public class Loader {
      * Start autorun plugins
      */
     private static void lauchAutoRunPlugins() {
-        for (IDescription plugin : pluginsDescription) {
+        for (IDescription plugin : pluginDescriptions) {
 
             if (isAutoRunPlugin(plugin)) {
 
-                // TODO charger ses dépendances
+                Object o = loadPlugin(plugin);
 
-                Plugin o = (Plugin) loadPlugin(plugin);
-                o.start();
+                if (! isAutoRunClass(o.getClass())) {
+
+                    // TODO throw new exception
+                    break;
+                }
+
+                Plugin autoRunPlugin = (Plugin) o;
+                try {
+                    autoRunPlugin.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
+    /**
+     * Check if plugin is autorun
+     *
+     * @param plugin
+     * @return
+     */
     private static boolean isAutoRunPlugin(IDescription plugin) {
 
-        // TODO vérifier si le plugin doit être lancé au démarrage
+        if (! plugin.getProprietes().containsKey("autoRun")) {
+            return false;
+        }
 
-        return true;
+        Object autoRun = plugin.getProprietes().get("autoRun");
+
+        if (! (autoRun instanceof Boolean)) {
+            // TODO throw exception
+            return false;
+        }
+
+        return (Boolean) autoRun;
+    }
+
+    /**
+     * Check if class is an autorun class (implement Plugin)
+     *
+     * @param cl
+     * @return
+     */
+    private static boolean isAutoRunClass(Class<?> cl) {
+
+        return Plugin.class.isAssignableFrom(cl);
     }
 
     /**
@@ -83,19 +121,19 @@ public class Loader {
         Map<String, Map> pluginConfigs = loadConfigFile();
 
         for (Map.Entry<String, Map> pluginConfig : pluginConfigs.entrySet()) {
-            pluginsDescription.add(loadPluginConfig(pluginConfig.getValue()));
+            pluginDescriptions.add(loadPluginConfig(pluginConfig.getValue()));
         }
     }
 
     /**
-     * Load a specific pluginsDescription config
+     * Load a specific pluginDescriptions config
      *
      * @param pluginConfig
      * @return
      */
     private static IDescription loadPluginConfig(Map pluginConfig) {
 
-        // TODO vérifier que la class principale implémente une fonction start (mettre en place une interface)
+        // TODO vérifier que le plugin a bien le paramètre class
 
         return new Description((String) pluginConfig.get("class"), pluginConfig);
     }
@@ -120,10 +158,29 @@ public class Loader {
         return map;
     }
 
-    public static List<IDescription> getPluginsDescription(Class<?> constraint) {
-        // TODO retourner en faisant un filtre sur les types
+    /**
+     * Get plugin list
+     *
+     * @param constraint
+     * @return
+     * @throws Exception
+     */
+    public static List<IDescription> getPluginsDescription(Class<?> constraint) throws ClassNotFoundException {
 
+        String className;
+        Class<?> cl;
         List<IDescription> list = new ArrayList<>();
+
+        for (IDescription pluginDescription :
+                pluginDescriptions) {
+
+            className = pluginDescription.getProprietes().get("class");
+            cl = Class.forName(className);
+
+            if (constraint.isAssignableFrom(cl)) {
+                list.add(pluginDescription);
+            }
+        }
 
         return list;
     }
