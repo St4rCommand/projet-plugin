@@ -1,6 +1,5 @@
 package org.nantes.univ.archi.test.afficheurconsole;
 
-import org.nantes.univ.archi.test.Test;
 import org.nantes.univ.archi.test.TestAfficheur;
 
 /**
