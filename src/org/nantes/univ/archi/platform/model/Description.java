@@ -1,7 +1,8 @@
-package org.nantes.univ.archi.platform;
+package org.nantes.univ.archi.platform.model;
+
+import org.nantes.univ.archi.platform.behaviour.IDescription;
 
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by romain on 08/03/17.

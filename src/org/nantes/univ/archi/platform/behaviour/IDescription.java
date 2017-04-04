@@ -1,4 +1,4 @@
-package org.nantes.univ.archi.platform;
+package org.nantes.univ.archi.platform.behaviour;
 
 import java.util.Map;
 

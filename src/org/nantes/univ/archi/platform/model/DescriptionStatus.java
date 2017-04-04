@@ -1,4 +1,4 @@
-package org.nantes.univ.archi.platform;
+package org.nantes.univ.archi.platform.model;
 
 /**
  * Created by romain on 08/03/17.
