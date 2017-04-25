@@ -13,6 +13,19 @@ import java.util.List;
  */
 public class PluginLoader {
 
+    private static PluginLoader uniquePluginLoaderInstance = null;
+
+    private PluginLoader() {
+    }
+
+    public static PluginLoader getInstance() {
+        if (null == uniquePluginLoaderInstance) {
+            uniquePluginLoaderInstance = new PluginLoader();
+        }
+
+        return uniquePluginLoaderInstance;
+    }
+
     /**
      * Load the main plugin class
      *
@@ -53,10 +66,12 @@ public class PluginLoader {
 
         String className;
         Class<?> cl;
+        PlatformLoader platformLoader = PlatformLoader.getInstance();
+        List<IDescription> allPluginDescriptions = platformLoader.getPluginDescription();
         List<IDescription> list = new ArrayList<>();
 
         for (IDescription pluginDescription :
-                PlatformLoader.pluginDescriptions) {
+                allPluginDescriptions) {
 
             className = pluginDescription.getProprietes().get("class");
             cl = Class.forName(className);

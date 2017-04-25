@@ -12,28 +12,46 @@ import java.util.List;
  */
 public class PlatformLoader {
 
-    // TODO Gérer des dépendances requises
-    // TODO Refactoring pour supprimer tous les statics (singleton sur la plateforme ?)
 
-    // TODO passer en privé
-    public static List<IDescription> pluginDescriptions = new ArrayList<>();
+    private static PlatformLoader uniquePlatformLoaderInstance = null;
+
+    private PlatformLoader() {
+    }
+
+    public static PlatformLoader getInstance() {
+        if (null == uniquePlatformLoaderInstance) {
+            uniquePlatformLoaderInstance = new PlatformLoader();
+        }
+
+        return uniquePlatformLoaderInstance;
+    }
+
+    // TODO Gérer des dépendances requises
+
+    protected List<IDescription> pluginDescriptions = new ArrayList<>();
 
 
     // TODO mettre en place les status
     public static void main(String[] args) {
-        ConfigLoader.loadConfig();
-        lauchAutoRunPlugins();
+
+        ConfigLoader configLoader = ConfigLoader.getInstance();
+        configLoader.loadConfig();
+
+        PlatformLoader platformLoader = PlatformLoader.getInstance();
+        platformLoader.lauchAutoRunPlugins();
     }
 
     /**
      * Start autorun plugins
      */
-    private static void lauchAutoRunPlugins() {
+    private void lauchAutoRunPlugins() {
+        PluginLoader pluginLoader = PluginLoader.getInstance();
+
         for (IDescription plugin : pluginDescriptions) {
 
             if (Tools.isAutoRunPlugin(plugin)) {
 
-                Object o = PluginLoader.loadPlugin(plugin);
+                Object o = pluginLoader.loadPlugin(plugin);
 
                 if (! Tools.isAutoRunClass(o.getClass())) {
 
@@ -52,4 +70,11 @@ public class PlatformLoader {
     }
 
 
+    public List<IDescription> getPluginDescription() {
+        return this.pluginDescriptions;
+    }
+
+    public void addPluginDescriptions(IDescription iDescription) {
+        this.pluginDescriptions.add(iDescription);
+    }
 }

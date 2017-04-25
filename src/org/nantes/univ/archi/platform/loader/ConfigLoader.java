@@ -16,14 +16,28 @@ import java.util.Map;
  */
 public class ConfigLoader {
 
+    private static ConfigLoader uniqueConfigLoaderInstance = null;
+
+    private ConfigLoader() {
+    }
+
+    public static ConfigLoader getInstance() {
+        if (null == uniqueConfigLoaderInstance) {
+            uniqueConfigLoaderInstance = new ConfigLoader();
+        }
+
+        return uniqueConfigLoaderInstance;
+    }
+
     /**
      * Load application config
      */
-    public static void loadConfig() {
+    public void loadConfig() {
         Map<String, Map> pluginConfigs = loadConfigFile();
+        PlatformLoader platformLoader = PlatformLoader.getInstance();
 
         for (Map.Entry<String, Map> pluginConfig : pluginConfigs.entrySet()) {
-            PlatformLoader.pluginDescriptions.add(loadPluginConfig(pluginConfig.getValue()));
+            platformLoader.addPluginDescriptions(loadPluginConfig(pluginConfig.getValue()));
         }
     }
 
@@ -31,9 +45,9 @@ public class ConfigLoader {
      * Load a specific pluginDescriptions config
      *
      * @param pluginConfig
-     * @return
+     * @return IDescription
      */
-    private static IDescription loadPluginConfig(Map pluginConfig) {
+    private IDescription loadPluginConfig(Map pluginConfig) {
 
         // TODO vérifier que le plugin a bien le paramètre class
 
@@ -43,9 +57,9 @@ public class ConfigLoader {
     /**
      * Load main config file
      *
-     * @return
+     * @return Map<String, Map>
      */
-    private static Map<String, Map> loadConfigFile() {
+    private Map<String, Map> loadConfigFile() {
         Map<String, Map> map = new HashMap<>();
 
         try {
