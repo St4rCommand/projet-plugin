@@ -1,0 +1,85 @@
+Index: src/org/nantes/univ/archi/platform/loader/PlatformLoader.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/org/nantes/univ/archi/platform/loader/PlatformLoader.java	(date 1491300749000)
++++ src/org/nantes/univ/archi/platform/loader/PlatformLoader.java	(revision )
+@@ -16,19 +16,23 @@
+     // TODO Refactoring pour supprimer tous les statics (singleton sur la plateforme ?)
+ 
+     // TODO passer en privé
+-    public static List<IDescription> pluginDescriptions = new ArrayList<>();
++    protected List<IDescription> pluginDescriptions = new ArrayList<>();
+ 
+ 
+     // TODO mettre en place les status
+     public static void main(String[] args) {
+-        ConfigLoader.loadConfig();
+-        lauchAutoRunPlugins();
++
++        ConfigLoader configLoader = new ConfigLoader();
++        configLoader.loadConfig();
++
++        PlatformLoader platformLoader = new PlatformLoader();
++        platformLoader.lauchAutoRunPlugins();
+     }
+ 
+     /**
+      * Start autorun plugins
+      */
+-    private static void lauchAutoRunPlugins() {
++    private void lauchAutoRunPlugins() {
+         for (IDescription plugin : pluginDescriptions) {
+ 
+             if (Tools.isAutoRunPlugin(plugin)) {
+Index: src/org/nantes/univ/archi/platform/loader/ConfigLoader.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/org/nantes/univ/archi/platform/loader/ConfigLoader.java	(date 1491300749000)
++++ src/org/nantes/univ/archi/platform/loader/ConfigLoader.java	(revision )
+@@ -19,7 +19,7 @@
+     /**
+      * Load application config
+      */
+-    public static void loadConfig() {
++    public void loadConfig() {
+         Map<String, Map> pluginConfigs = loadConfigFile();
+ 
+         for (Map.Entry<String, Map> pluginConfig : pluginConfigs.entrySet()) {
+@@ -33,7 +33,7 @@
+      * @param pluginConfig
+      * @return
+      */
+-    private static IDescription loadPluginConfig(Map pluginConfig) {
++    private IDescription loadPluginConfig(Map pluginConfig) {
+ 
+         // TODO vérifier que le plugin a bien le paramètre class
+ 
+@@ -45,7 +45,7 @@
+      *
+      * @return
+      */
+-    private static Map<String, Map> loadConfigFile() {
++    private Map<String, Map> loadConfigFile() {
+         Map<String, Map> map = new HashMap<>();
+ 
+         try {
+Index: src/org/nantes/univ/archi/platform/loader/PluginLoader.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/org/nantes/univ/archi/platform/loader/PluginLoader.java	(date 1491300749000)
++++ src/org/nantes/univ/archi/platform/loader/PluginLoader.java	(revision )
+@@ -16,7 +16,7 @@
+      * @param description
+      * @return
+      */
+-    public static Object loadPlugin(IDescription description) {
++    public Object loadPlugin(IDescription description) {
+         Class<?> cl = null;
+ 
+         try {

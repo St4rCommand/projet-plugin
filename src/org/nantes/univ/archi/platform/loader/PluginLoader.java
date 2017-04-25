@@ -1,7 +1,10 @@
 package org.nantes.univ.archi.platform.loader;
 
 import org.nantes.univ.archi.platform.behaviour.IDescription;
+import org.nantes.univ.archi.platform.handler.LogHandler;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +17,10 @@ public class PluginLoader {
      * Load the main plugin class
      *
      * @param description
-     * @return
+     * @return Object
      */
     public static Object loadPlugin(IDescription description) {
-        Class<?> cl = null;
+        Class<?> cl;
 
         try {
             cl = Class.forName(description.getName());
@@ -26,18 +29,15 @@ public class PluginLoader {
             return null;
         }
 
-        Object ob = null;
+        Object ob;
         try {
             ob = cl.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             return null;
         }
 
-        return ob;
+        return getProxyFor(ob);
     }
 
 
@@ -46,8 +46,8 @@ public class PluginLoader {
      * Get plugin list
      *
      * @param constraint
-     * @return
-     * @throws Exception
+     * @return List<IDescription>
+     * @throws ClassNotFoundException
      */
     public static List<IDescription> getPluginsDescription(Class<?> constraint) throws ClassNotFoundException {
 
@@ -67,5 +67,16 @@ public class PluginLoader {
         }
 
         return list;
+    }
+
+    /**
+     *
+     * @param o
+     * @return Object
+     */
+    protected static Object getProxyFor(Object o) {
+        InvocationHandler ih = new LogHandler(o);
+
+        return Proxy.newProxyInstance(o.getClass().getClassLoader(), o.getClass().getInterfaces(), ih);
     }
 }
