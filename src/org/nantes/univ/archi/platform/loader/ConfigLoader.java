@@ -2,6 +2,7 @@ package org.nantes.univ.archi.platform.loader;
 
 import org.nantes.univ.archi.platform.model.Description;
 import org.nantes.univ.archi.platform.behaviour.IDescription;
+import org.nantes.univ.archi.platform.model.DescriptionStatus;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -37,7 +38,9 @@ public class ConfigLoader {
         PlatformLoader platformLoader = PlatformLoader.getInstance();
 
         for (Map.Entry<String, Map> pluginConfig : pluginConfigs.entrySet()) {
-            platformLoader.addPluginDescriptions(loadPluginConfig(pluginConfig.getValue()));
+            IDescription iDescription = loadPluginConfig(pluginConfig.getValue());
+            platformLoader.addPluginDescriptions(iDescription);
+            iDescription.setStatus(DescriptionStatus.FOUND);
         }
     }
 

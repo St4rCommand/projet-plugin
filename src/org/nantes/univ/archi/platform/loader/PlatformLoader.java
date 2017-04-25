@@ -3,17 +3,23 @@ package org.nantes.univ.archi.platform.loader;
 import org.nantes.univ.archi.platform.Tools;
 import org.nantes.univ.archi.platform.behaviour.IDescription;
 import org.nantes.univ.archi.platform.behaviour.Plugin;
+import org.nantes.univ.archi.platform.model.Description;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created by romain on 07/03/17.
  */
-public class PlatformLoader {
+public class PlatformLoader implements Observer {
 
 
+    // TODO Gérer des dépendances requises
+    protected List<IDescription> pluginDescriptions = new ArrayList<>();
     private static PlatformLoader uniquePlatformLoaderInstance = null;
+
 
     private PlatformLoader() {
     }
@@ -26,12 +32,7 @@ public class PlatformLoader {
         return uniquePlatformLoaderInstance;
     }
 
-    // TODO Gérer des dépendances requises
 
-    protected List<IDescription> pluginDescriptions = new ArrayList<>();
-
-
-    // TODO mettre en place les status
     public static void main(String[] args) {
 
         ConfigLoader configLoader = ConfigLoader.getInstance();
@@ -75,6 +76,15 @@ public class PlatformLoader {
     }
 
     public void addPluginDescriptions(IDescription iDescription) {
+        if (iDescription instanceof Description) {
+            ((Description) iDescription).addObserver(this);
+        }
+
         this.pluginDescriptions.add(iDescription);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        System.out.println("modif !");
     }
 }
