@@ -1,4 +1,4 @@
-package org.nantes.univ.archi.test;
+package org.nantes.univ.archi.plugins.test;
 
 /**
  * Created on 04/04/17.

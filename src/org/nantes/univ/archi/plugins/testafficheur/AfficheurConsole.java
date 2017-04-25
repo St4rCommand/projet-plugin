@@ -1,6 +1,6 @@
-package org.nantes.univ.archi.test.afficheurconsole;
+package org.nantes.univ.archi.plugins.testafficheur;
 
-import org.nantes.univ.archi.test.TestAfficheur;
+import org.nantes.univ.archi.plugins.test.TestAfficheur;
 
 /**
  * Created on 04/04/17.

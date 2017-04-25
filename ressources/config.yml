@@ -1,10 +1,10 @@
 Test:
   name: "Test"
-  class: "org.nantes.univ.archi.test.Test"
+  class: "org.nantes.univ.archi.plugins.test.Test"
   autoRun: true
 TestAfficheur:
   name: "AfficheurConsole"
-  class: "org.nantes.univ.archi.test.afficheurconsole.AfficheurConsole"
+  class: "org.nantes.univ.archi.plugins.testafficheur.AfficheurConsole"
 #MiageSims:
 #  name: "MiageSims"
 #  class: "org.nantes.univ.archi.gestionEtudiants.SimsMIAGE"

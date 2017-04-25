@@ -1,4 +1,4 @@
-package org.nantes.univ.archi.test;
+package org.nantes.univ.archi.plugins.test;
 
 import org.nantes.univ.archi.platform.behaviour.IDescription;
 import org.nantes.univ.archi.platform.behaviour.Plugin;
