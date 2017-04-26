@@ -37,7 +37,7 @@ public class PluginLoader {
         Class<?> cl;
 
         try {
-            cl = Class.forName(description.getName());
+            cl = Class.forName(description.getPropriete("class"));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return null;

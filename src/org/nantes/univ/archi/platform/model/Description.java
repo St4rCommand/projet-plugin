@@ -24,6 +24,11 @@ public class Description extends Observable implements IDescription {
         return this.proprietes;
     }
 
+    @Override
+    public String getPropriete(String key) {
+        return proprietes.get(key);
+    }
+
     public String getName() {
         return this.name;
     }

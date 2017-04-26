@@ -9,6 +9,7 @@ import java.util.Observable;
 public interface IDescription{
 
     Map<String, String> getProprietes();
+    String getPropriete(String key);
     String getName();
     int getStatus();
     void setStatus(int status);

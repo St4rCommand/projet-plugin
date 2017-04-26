@@ -54,7 +54,7 @@ public class ConfigLoader {
 
         // TODO vérifier que le plugin a bien le paramètre class
 
-        return new Description((String) pluginConfig.get("class"), pluginConfig);
+        return new Description((String) pluginConfig.get("name"), pluginConfig);
     }
 
     /**
