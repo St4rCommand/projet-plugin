@@ -5,11 +5,16 @@ Test:
 TestAfficheur:
   name: "AfficheurConsole"
   class: "org.nantes.univ.archi.plugins.testafficheur.AfficheurConsole"
-#MiageSims:
-#  name: "MiageSims"
-#  class: "org.nantes.univ.archi.gestionEtudiants.SimsMIAGE"
-#  autoRun: true
-#  dependancies : []
+MiageSims:
+  name: "MiageSims"
+  class: "org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.SimsMIAGE"
+  autoRun: true
+InterfaceGraphiqueMiageSims:
+  name: "InterfaceGraphiqueMiageSims"
+  class: "org.nantes.univ.archi.plugins.gestionEtudiants.interfaceGraphique.InterfaceGraphique"
+StubMiageSims:
+  name: "StubMiageSims"
+  class: "org.nantes.univ.archi.plugins.gestionEtudiants.stubMiageSims.StubEtudiant"
 #Monitor:
 #  name: "Monitor"
 #  class: "org.nantes.univ.archi.plugin.Monitor"
