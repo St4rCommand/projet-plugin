@@ -2,10 +2,7 @@ package org.nantes.univ.archi.plugins.gestionEtudiants.interfaceGraphique;
 
 import org.nantes.univ.archi.platform.behaviour.IDescription;
 import org.nantes.univ.archi.platform.loader.PluginLoader;
-import org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.Etudiant;
-import org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.PluginSimsMiageInterface;
-import org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.Promotion;
-import org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.SimsMiageInterface;
+import org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.*;
 import org.nantes.univ.archi.plugins.gestionEtudiants.stubMiageSims.StubInterface;
 
 import javax.swing.*;
@@ -99,7 +96,19 @@ public class InterfaceGraphique extends JFrame implements SimsMiageInterface {
                             btnPanel.add(btn);
                             btn.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
-                                    pluginInterface.calculer(selectedEtu);
+                                    List<Jauge> jauges = pluginInterface.calculer(selectedEtu);
+                                    Object[][] rows = new Object[jauges.size()][2];
+                                    Object[] cols = {
+                                            "Element","Valeur"
+                                    };
+                                    int i = 0;
+                                    for(Jauge j : jauges) {
+                                        rows[i][0] = j.getNom();
+                                        rows[i][1] = j.getValeur();
+                                        i++;
+                                    }
+                                    JTable table = new JTable(rows, cols);
+                                    JOptionPane.showMessageDialog(null, new JScrollPane(table));//
                                 }
                             });
                         }

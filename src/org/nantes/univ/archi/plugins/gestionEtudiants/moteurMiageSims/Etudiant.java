@@ -1,5 +1,6 @@
 package org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +59,14 @@ public class Etudiant {
 	
 	public void setJauges(Map<String, List<Jauge>> jauges) {
 		this.jauges = jauges;
+	}
+
+	public List<Jauge> getJauge(String nom) {
+		List<Jauge> res = null;
+		if(jauges.containsKey(nom)) {
+			res = jauges.get(nom);
+		}
+		return res;
 	}
 
 	@Override
