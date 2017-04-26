@@ -1,4 +1,8 @@
-package org.nantes.univ.archi.gestionEtudiants;
+package org.nantes.univ.archi.plugins.gestionEtudiants.stubMiageSims;
+
+import org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.Etudiant;
+import org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.Jauge;
+import org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.Promotion;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,11 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class StubEtudiant {
+public class StubEtudiant implements StubInterface {
 
     private List<Promotion> promotions;
 
-    public StubEtudiant() {
+    @Override
+    public void init() {
 
         promotions = new ArrayList<Promotion>();
         int annee = 2012;
@@ -86,7 +91,7 @@ public class StubEtudiant {
 
 
             // creation d'une nouvelle promotion
-            Promotion p = new Promotion("promo" + (i + 1), annee, etudiants);
+            Promotion p = new Promotion("promo" + annee, annee, etudiants);
 
             // ajout a la liste des promotions
             this.promotions.add(p);
@@ -94,12 +99,24 @@ public class StubEtudiant {
         }
     }
 
+    @Override
     public List<Promotion> getPromotions() {
         return promotions;
     }
 
     public void setPromotions(List<Promotion> promotions) {
         this.promotions = promotions;
+    }
+
+    @Override
+    public Promotion getPromotion(String nom) {
+        Promotion res = null;
+        for(Promotion p : promotions) {
+            if(nom.equals(p.getNom())) {
+                res = p;
+            }
+        }
+        return res;
     }
 
 }
