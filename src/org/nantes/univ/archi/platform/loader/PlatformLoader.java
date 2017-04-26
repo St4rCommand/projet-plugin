@@ -1,5 +1,6 @@
 package org.nantes.univ.archi.platform.loader;
 
+import org.nantes.univ.archi.platform.Moniteur;
 import org.nantes.univ.archi.platform.Tools;
 import org.nantes.univ.archi.platform.behaviour.IDescription;
 import org.nantes.univ.archi.platform.behaviour.Observable;
@@ -21,10 +22,10 @@ public class PlatformLoader implements Observer {
     // TODO Gérer des dépendances requises
     protected List<IDescription> pluginDescriptions = new ArrayList<>();
     private static PlatformLoader uniquePlatformLoaderInstance = null;
-
+    private Moniteur moniteur = new Moniteur();
 
     private PlatformLoader() {
-
+        moniteur.setVisible(true);
     }
 
     public static PlatformLoader getInstance() {
@@ -90,20 +91,8 @@ public class PlatformLoader implements Observer {
 
         if (observable instanceof IDescription) {
             IDescription plugin = (IDescription) observable;
-            System.out.println("[PLATFORM]     -  Le plugin "+ plugin.getName()+ " est " +getStatusMessage(plugin.getStatus()));
-        }
-    }
-
-    private String getStatusMessage(int status) {
-        switch (status) {
-            case DescriptionStatus.FOUND:
-                return "trouvé";
-            case DescriptionStatus.LOADED:
-                return "chargé";
-            case DescriptionStatus.NOT_FOUND:
-                return "non-trouvé";
-            default:
-                return "PAS DE MESSAGE";
+            System.out.println("[PLATFORM]     -  Le plugin "+ plugin.getName()+ " est " + Tools.getStatusMessage(plugin.getStatus()));
+            this.moniteur.updatePluginsData(pluginDescriptions);
         }
     }
 }
