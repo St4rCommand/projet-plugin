@@ -25,6 +25,13 @@ public class SimsMIAGE implements Plugin {
 		stub.init();
 
 
+		List<IDescription> pluginList = PluginLoader.getPluginsDescription(PluginSimsMiageInterface.class);
+
+		if (pluginList.size() == 0) {
+			throw new Exception("aucun afficheur n'est disponible");
+		}
+
+
 		List<IDescription> interfacePluginList = PluginLoader.getPluginsDescription(SimsMiageInterface.class);
 
 		if (interfacePluginList.size() == 0) {
@@ -32,7 +39,7 @@ public class SimsMIAGE implements Plugin {
 		}
 
 		SimsMiageInterface afficheur = (SimsMiageInterface) PluginLoader.loadPlugin(interfacePluginList.get(0));
-		afficheur.init(stub);
+		afficheur.init(stub, pluginList);
 
     }
 }

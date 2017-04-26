@@ -1,6 +1,9 @@
 package org.nantes.univ.archi.plugins.gestionEtudiants.interfaceGraphique;
 
+import org.nantes.univ.archi.platform.behaviour.IDescription;
+import org.nantes.univ.archi.platform.loader.PluginLoader;
 import org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.Etudiant;
+import org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.PluginSimsMiageInterface;
 import org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.Promotion;
 import org.nantes.univ.archi.plugins.gestionEtudiants.moteurMiageSims.SimsMiageInterface;
 import org.nantes.univ.archi.plugins.gestionEtudiants.stubMiageSims.StubInterface;
@@ -22,12 +25,14 @@ import java.util.List;
 public class InterfaceGraphique extends JFrame implements SimsMiageInterface {
 
     private StubInterface stub;
+    private List<IDescription> pluginList;
     private List<String> promotions;
     private List<String> etudiants;
     private Promotion promo;
     private Etudiant selectedEtu;
 
     private JPanel rootPanel;
+    private JPanel etuPanel;
     private JComboBox listePromotions;
     private JList listeEtudiants;
     private JLabel idLabel;
@@ -38,15 +43,12 @@ public class InterfaceGraphique extends JFrame implements SimsMiageInterface {
     private JLabel nomValue;
     private JLabel prenomValue;
     private JLabel dateValue;
-    private JButton button1;
-    private JButton button2;
-    private JButton button3;
-    private JPanel panelEtu;
-    private JPanel panelBtn;
+    private JPanel btnPanel;
 
 
     private void initPanel() {
         setContentPane(rootPanel);
+        btnPanel.setLayout(new GridLayout(10,2));
         clearSelection();
         promotions = new ArrayList<String>();
         for (Promotion p : stub.getPromotions()) {
@@ -72,6 +74,7 @@ public class InterfaceGraphique extends JFrame implements SimsMiageInterface {
             public void valueChanged(ListSelectionEvent arg0) {
                 if (!arg0.getValueIsAdjusting()) {
                     if(listeEtudiants.getSelectedValue() != null) {
+                        btnPanel.removeAll();
                         idLabel.setVisible(true);
                         nomLabel.setVisible(true);
                         prenomLabel.setVisible(true);
@@ -87,6 +90,21 @@ public class InterfaceGraphique extends JFrame implements SimsMiageInterface {
                         nomValue.setText(selectedEtu.getNom());
                         prenomValue.setText(selectedEtu.getPrenom());
                         dateValue.setText(Integer.toString(selectedEtu.getDateNaissance()));
+
+
+                        // gestion dynamique des bouton plugins
+                        for(IDescription plugin : pluginList) {
+                            PluginSimsMiageInterface pluginInterface = (PluginSimsMiageInterface) PluginLoader.loadPlugin(plugin);
+                            JButton btn = new JButton(plugin.getPropriete("nomBouton"));
+                            btnPanel.add(btn);
+                            btn.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    pluginInterface.calculer(selectedEtu);
+                                }
+                            });
+                        }
+
+
                     }
                 }
             }
@@ -110,10 +128,13 @@ public class InterfaceGraphique extends JFrame implements SimsMiageInterface {
 
 
     @Override
-    public void init(StubInterface stub) {
+    public void init(StubInterface stub, List<IDescription> pluginList) {
         this.stub = stub;
+        this.pluginList = pluginList;
+
         initPanel();
 
+        this.setTitle("Sims MIAGE");
         setPreferredSize(new Dimension(800,400));
         pack();
         setLocationRelativeTo(null);

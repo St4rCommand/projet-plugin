@@ -15,6 +15,14 @@ InterfaceGraphiqueMiageSims:
 StubMiageSims:
   name: "StubMiageSims"
   class: "org.nantes.univ.archi.plugins.gestionEtudiants.stubMiageSims.StubEtudiant"
+calculBonheur:
+  name: "calculBonheur"
+  class: "org.nantes.univ.archi.plugins.calculBonheur.CalculBonheur"
+  nomBouton: "Calcul du bonheur"
+determinerFuturMetier:
+  name: "determinerFuturMetier"
+  class: "org.nantes.univ.archi.plugins.determinerFuturMetier.DeterminerFuturMetier"
+  nomBouton: "Déterminer le futur métier"
 #Monitor:
 #  name: "Monitor"
 #  class: "org.nantes.univ.archi.plugin.Monitor"
