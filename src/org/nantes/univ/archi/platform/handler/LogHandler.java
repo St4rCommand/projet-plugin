@@ -16,7 +16,7 @@ public class LogHandler implements InvocationHandler{
     }
 
     public Object invoke (Object proxy, Method method, Object... args) throws InvocationTargetException, IllegalAccessException {
-        System.out.println(method.getName() + " started");
+        System.out.println("[PLATFORM]     -  "+method.getName() + " called.");
 
         return method.invoke(target, args);
     }

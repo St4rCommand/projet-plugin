@@ -17,11 +17,11 @@ public class Test implements Plugin {
         List<IDescription> afficheurPluginList = PluginLoader.getPluginsDescription(TestAfficheur.class);
 
         if (afficheurPluginList.size() == 0) {
-            throw new Exception("aucun afficheur n'est disponible");
+            throw new Exception("[TEST] Aucun afficheur n'est disponible.");
         }
 
         TestAfficheur afficheur = (TestAfficheur) PluginLoader.loadPlugin(afficheurPluginList.get(0));
 
-        afficheur.afficher("Les modules sont correctements chargés");
+        afficheur.afficher("[TEST]         -  Le plugin de test est chargé.");
     }
 }

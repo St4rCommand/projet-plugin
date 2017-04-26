@@ -2,6 +2,7 @@ package org.nantes.univ.archi.platform.loader;
 
 import org.nantes.univ.archi.platform.behaviour.IDescription;
 import org.nantes.univ.archi.platform.handler.LogHandler;
+import org.nantes.univ.archi.platform.model.DescriptionStatus;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -49,6 +50,8 @@ public class PluginLoader {
             e.printStackTrace();
             return null;
         }
+
+        description.setStatus(DescriptionStatus.LOADED);
 
         return getProxyFor(ob);
     }
