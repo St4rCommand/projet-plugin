@@ -15,14 +15,14 @@ import java.util.Map;
 /**
  * Created on 04/04/17.
  */
-public class ConfigLoader {
+class ConfigLoader {
 
     private static ConfigLoader uniqueConfigLoaderInstance = null;
 
     private ConfigLoader() {
     }
 
-    public static ConfigLoader getInstance() {
+    static ConfigLoader getInstance() {
         if (null == uniqueConfigLoaderInstance) {
             uniqueConfigLoaderInstance = new ConfigLoader();
         }
@@ -33,7 +33,7 @@ public class ConfigLoader {
     /**
      * Load application config
      */
-    public void loadConfig() {
+    void loadConfig() {
         Map<String, Map> pluginConfigs = loadConfigFile();
         PlatformLoader platformLoader = PlatformLoader.getInstance();
 

@@ -19,7 +19,7 @@ public class PluginLoader {
     private PluginLoader() {
     }
 
-    public static PluginLoader getInstance() {
+    static PluginLoader getInstance() {
         if (null == uniquePluginLoaderInstance) {
             uniquePluginLoaderInstance = new PluginLoader();
         }
@@ -59,7 +59,7 @@ public class PluginLoader {
 
 
     /**
-     * Get plugin list
+     * Get plugin list corresponding to the interface in parameter.
      *
      * @param constraint
      * @return List<IDescription>
@@ -92,7 +92,7 @@ public class PluginLoader {
      * @param o
      * @return Object
      */
-    protected static Object getProxyFor(Object o) {
+    static Object getProxyFor(Object o) {
         InvocationHandler ih = new LogHandler(o);
 
         return Proxy.newProxyInstance(o.getClass().getClassLoader(), o.getClass().getInterfaces(), ih);

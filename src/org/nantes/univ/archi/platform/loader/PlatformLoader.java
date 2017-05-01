@@ -28,7 +28,7 @@ public class PlatformLoader implements Observer {
         moniteur.setVisible(true);
     }
 
-    public static PlatformLoader getInstance() {
+    static PlatformLoader getInstance() {
         if (null == uniquePlatformLoaderInstance) {
             uniquePlatformLoaderInstance = new PlatformLoader();
         }
@@ -74,11 +74,11 @@ public class PlatformLoader implements Observer {
     }
 
 
-    public List<IDescription> getPluginDescription() {
+    List<IDescription> getPluginDescription() {
         return this.pluginDescriptions;
     }
 
-    public void addPluginDescriptions(IDescription iDescription) {
+    void addPluginDescriptions(IDescription iDescription) {
         if (iDescription instanceof Description) {
             ((Description) iDescription).addObserver(this);
         }
