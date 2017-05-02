@@ -16,9 +16,9 @@ Dans IntelliJ,
 4. Configurer *Main Class* : sélectionner *PlatformLoader*
 5. *Run*
 
-## Utilisisation
+## Utilisation 
 
-### SimsMIAGE
+### SimsMIAGE
 
 1. Sélectionner une promotion dans la liste
 2. Sélectionner un étudiant
